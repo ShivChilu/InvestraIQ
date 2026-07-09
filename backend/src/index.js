@@ -52,6 +52,15 @@ app.use('/api', generalLimiter);
 // ─── Routes ───────────────────────────────────────────────────────────────
 app.use('/api', analysisRouter);
 
+// ─── Index / Welcome Route ────────────────────────────────────────────────
+app.get('/', (req, res) => {
+  res.json({
+    status: 'healthy',
+    message: 'InvestraIQ Multi-Agent AI Investment Research Engine API is running.',
+    docs: '/api'
+  });
+});
+
 // ─── Health Check ─────────────────────────────────────────────────────────
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', version: '2.0' });
