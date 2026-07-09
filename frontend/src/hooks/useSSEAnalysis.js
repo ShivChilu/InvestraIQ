@@ -43,7 +43,8 @@ export function useSSEAnalysis() {
       eventSourceRef.current.close();
     }
 
-    const backendUrl = `http://localhost:5000/api/analyze?company=${encodeURIComponent(companyName)}&ticker=${encodeURIComponent(ticker)}`;
+    const API_BASE_URL = import.meta.env.VITE_API_URL || window.location.origin.replace('5173', '5000');
+    const backendUrl = `${API_BASE_URL}/api/analyze?company=${encodeURIComponent(companyName)}&ticker=${encodeURIComponent(ticker)}`;
     const es = new EventSource(backendUrl);
     eventSourceRef.current = es;
 

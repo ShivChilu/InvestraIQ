@@ -44,8 +44,9 @@ export function SearchSection({ onSearch, loading }) {
       const controller = new AbortController();
       const timer = setTimeout(async () => {
         try {
+          const API_BASE_URL = import.meta.env.VITE_API_URL || window.location.origin.replace('5173', '5000');
           const res = await fetch(
-            `http://localhost:5000/api/search?keywords=${encodeURIComponent(searchVal)}`,
+            `${API_BASE_URL}/api/search?keywords=${encodeURIComponent(searchVal)}`,
             { signal: controller.signal }
           );
           if (res.ok) {
