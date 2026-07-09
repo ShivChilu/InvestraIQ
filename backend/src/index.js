@@ -14,7 +14,10 @@ app.use(cors({
   origin: (origin, callback) => {
     // Allow server-to-server / curl requests (no Origin header)
     if (!origin) return callback(null, true);
-    if (config.corsOrigins.includes(origin)) return callback(null, true);
+    const isAllowed = config.corsOrigins.includes(origin) || 
+                      origin.endsWith('.onrender.com') || 
+                      /^https?:\/\/localhost:\d+$/.test(origin);
+    if (isAllowed) return callback(null, true);
     callback(new Error(`CORS: Origin '${origin}' is not allowed.`));
   },
   credentials: true
