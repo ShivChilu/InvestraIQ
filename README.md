@@ -209,11 +209,6 @@ Here is how the terminal evaluates major companies when Gemini API key quotas ar
 
 ---
 
-## Developed By
-* **Shivaprasad Chiluveru**: Designed and implemented the complete frontend, backend, AI orchestration, prompt engineering, API integrations, UX, and system architecture.
-
----
-
 ## LLM Development Log
 
 *Development involved iterative collaboration with an LLM. The following log summarizes the major prompts, architectural decisions, debugging process, and reasoning throughout development.*
@@ -250,4 +245,10 @@ Here is how the terminal evaluates major companies when Gemini API key quotas ar
 ### 5. Performance Improvements & Bug Fixes
 * **Clean Conditional Rendering**: If the Alpha Vantage API key is rate-limited or fails to return historical statement details, the charts component collapses and returns `null` to maintain a clean layout instead of rendering empty/blank axes.
 * **API Exhaustion Safety**: Configured global error handlers on both the backend and frontend. If an API quota is exhausted, raw JSON errors, provider details, and server stacks are suppressed, and the user-friendly `"API quota exhausted."` message is rendered.
+
+---
+
+## Developed By
+* **Shivaprasad Chiluveru**: Designed and implemented the complete frontend, backend, AI orchestration, prompt engineering, API integrations, UX, and system architecture.
+
 
