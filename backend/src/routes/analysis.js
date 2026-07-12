@@ -13,6 +13,12 @@ router.get('/diagnostics', (req, res) => {
   res.json(diagnostics.getLogs());
 });
 
+// Browser Remote Logger
+router.post('/log-error', (req, res) => {
+  console.error('\n🚨 [Browser JavaScript Error]:', req.body);
+  res.json({ status: 'ok' });
+});
+
 
 function getDomainFromUrl(urlStr) {
   try {
