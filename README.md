@@ -4,6 +4,12 @@ InvestraIQ is a production-inspired, clean, multi-agent securities analysis plat
 
 ---
 
+## Project Links ⭐⭐⭐⭐⭐
+* 🔗 **Live Application URL**: [https://investraiq-1.onrender.com/](https://investraiq-1.onrender.com/)
+* 📦 **GitHub Repository**: [https://github.com/ShivChilu/InvestraIQ](https://github.com/ShivChilu/InvestraIQ)
+
+---
+
 ## Overview
 InvestraIQ solves the problem of information fragmentation and AI hallucinations in corporate research. Instead of manually cross-referencing multiple data providers, regulatory filing registries, news outlets, and search feeds, InvestraIQ acts as a centralized research terminal. It conducts parallel real-time lookups, deduplicates and ranks results, and runs a structured multi-agent debate to output clear, audited, and explainable investment scorecards.
 
