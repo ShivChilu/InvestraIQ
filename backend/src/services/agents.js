@@ -915,18 +915,18 @@ export async function runFullAnalysis(companyName, ticker, onProgress) {
         companyName: cleanName, ticker: activeTicker,
         websiteUrl: verifiedProfile.officialWebsite.value || '',
         overallInvestmentScore: 0, confidenceScore: 0, recommendation: 'Pass',
-        executiveSummary: 'AI-generated insights are temporarily unavailable due to API quota limits.',
-        detailedReasoning: errorLogs.join('\n\n') || 'Analysis failed due to API constraints.',
+        executiveSummary: 'API quota exhausted.',
+        detailedReasoning: 'API quota exhausted.',
         bullCase: [], bearCase: [],
         committeeVotes: { invest: 0, hold: 0, pass: 7 },
         committeeMembers: [
-          { role: "Financial Analyst", vote: "PASS", confidence: 100, reason: "API limits encountered during analysis." },
-          { role: "Risk Officer", vote: "PASS", confidence: 100, reason: "API limits encountered during analysis." },
-          { role: "Industry Analyst", vote: "PASS", confidence: 100, reason: "API limits encountered during analysis." },
-          { role: "News Analyst", vote: "PASS", confidence: 100, reason: "API limits encountered during analysis." },
-          { role: "Valuation Analyst", vote: "PASS", confidence: 100, reason: "API limits encountered during analysis." },
-          { role: "Growth Analyst", vote: "PASS", confidence: 100, reason: "API limits encountered during analysis." },
-          { role: "Portfolio Manager", vote: "PASS", confidence: 100, reason: "API limits encountered during analysis." }
+          { role: "Financial Analyst", vote: "PASS", confidence: 100, reason: "API quota exhausted." },
+          { role: "Risk Officer", vote: "PASS", confidence: 100, reason: "API quota exhausted." },
+          { role: "Industry Analyst", vote: "PASS", confidence: 100, reason: "API quota exhausted." },
+          { role: "News Analyst", vote: "PASS", confidence: 100, reason: "API quota exhausted." },
+          { role: "Valuation Analyst", vote: "PASS", confidence: 100, reason: "API quota exhausted." },
+          { role: "Growth Analyst", vote: "PASS", confidence: 100, reason: "API quota exhausted." },
+          { role: "Portfolio Manager", vote: "PASS", confidence: 100, reason: "API quota exhausted." }
         ],
         timeline: [], supportingSources: []
       };
