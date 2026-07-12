@@ -418,7 +418,7 @@ router.get('/analyze', async (req, res) => {
     console.log(`[SSE Connection] Completed analysis and cached report for: ${companyName}`);
   } catch (error) {
     console.error(`[SSE Connection Error] for ${companyName}:`, error);
-    res.write(`event: error\ndata: ${JSON.stringify({ message: error.message || 'Internal Server Error' })}\n\n`);
+    res.write(`event: error\ndata: ${JSON.stringify({ message: 'API quota exhausted.' })}\n\n`);
     res.end();
   }
 });

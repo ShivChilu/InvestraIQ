@@ -143,7 +143,7 @@ export function PerformanceCharts({
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title="Annual Financial Trends Evidence"
-        claim="Revenue and Diluted EPS performance charts mapped from Alpha Vantage annual SEC income statement disclosures."
+        claim="Revenue and Diluted EPS performance charts mapped from audited annual SEC income statement disclosures."
         persona="Financial Analyst"
         confidence={confidence || 88}
         sources={supportingSources || []}

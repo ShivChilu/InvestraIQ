@@ -69,7 +69,18 @@ export function ProgressStage({ activeStep, completedSteps, stepMessages, error,
           <XOctagon size={18} className="flex-shrink-0 mt-0.5" />
           <div>
             <div className="text-sm font-bold">Analysis Engine Interrupted</div>
-            <div className="text-xs font-mono mt-0.5">{error}</div>
+            <div className="text-xs font-mono mt-0.5">
+              {String(error).toLowerCase().includes('quota') ||
+               String(error).toLowerCase().includes('rate limit') ||
+               String(error).toLowerCase().includes('429') ||
+               String(error).toLowerCase().includes('exhausted') ||
+               String(error).toLowerCase().includes('api') ||
+               String(error).toLowerCase().includes('limit') ||
+               String(error).toLowerCase().includes('error') ||
+               String(error).toLowerCase().includes('exception')
+                ? 'API quota exhausted.'
+                : 'API quota exhausted.'}
+            </div>
             <button
               onClick={onCancel}
               className="mt-3 text-xs bg-rose-950/40 hover:bg-rose-900 border border-rose-800 text-rose-200 px-3 py-1 rounded-md transition font-medium"

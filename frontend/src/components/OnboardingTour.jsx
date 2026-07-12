@@ -1,85 +1,88 @@
 import { useState, useEffect } from 'react';
 import { Joyride, STATUS } from 'react-joyride';
 
-// ─── Step Definitions ────────────────────────────────────────────────────────
-
 const SEARCH_STEPS = [
   {
     target: 'body',
     placement: 'center',
     disableBeacon: true,
-    title: '👋 Welcome to ALTUNI.AI LABS',
-    content: 'This guided tour will walk you through every feature of the AI Investment Research platform. Use the search bar below to start your first analysis.',
+    title: '👋 Welcome to InvestraIQ',
+    content: 'Let\'s take a quick tour to help you get familiar with this multi-agent AI investment research terminal.',
   },
   {
     target: '#tour-search-bar',
     placement: 'bottom',
     disableBeacon: true,
-    title: '🔍 Search Bar',
-    content: 'Type any company name or stock ticker. The AI runs 5 specialized agents — financial, news, industry, valuation, and risk — in parallel.',
+    title: '🔍 Search & Analyze',
+    content: 'Enter a company name or ticker symbol here to deploy specialized AI agents analyzing financials, sentiment, competitive moats, and risk profile.',
   },
 ];
 
 const DASHBOARD_STEPS = [
   {
+    target: 'body',
+    placement: 'center',
+    disableBeacon: true,
+    title: '📈 Analysis Dashboard Tour',
+    content: 'The AI multi-agent research is complete! Let\'s walk through the generated scorecard, vote tallies, financial profiles, and agent reasoning logs.',
+  },
+  {
     target: '#tour-asset-summary',
     disableBeacon: true,
     title: '📊 Asset Analysis Summary',
-    content: 'The overall investment verdict (Invest / Hold / Pass) with key asset metadata from the full committee analysis.',
+    content: 'View the final consolidated verdict (Invest / Hold / Pass) and key metadata for the analyzed security.',
   },
   {
     target: '#tour-investment-score',
     disableBeacon: true,
-    title: '🎯 Investment Score & Confidence',
-    content: 'A quantified score from 0–100 reflecting overall investment attractiveness, plus the model\'s confidence in its own output.',
+    title: '🎯 Quantified Investment Score',
+    content: 'View the quantified model score (0-100) alongside the research confidence indicator.',
   },
   {
     target: '#tour-committee-ballot',
     disableBeacon: true,
     title: '🗳️ Committee Ballot',
-    content: 'The aggregate vote tally from the 7-member AI committee: Invest, Hold, or Pass.',
+    content: 'Check the simulated votes tallied across the 7-member specialized AI investment committee.',
   },
   {
     target: '#tour-committee-breakdown',
     disableBeacon: true,
-    title: '👥 Committee Decision Breakdown',
-    content: "Each specialist analyst's individual vote, confidence percentage, and one-line reasoning. Expand any card for the full argument.",
+    title: '👥 Decision Breakdown',
+    content: 'Inspect each individual analyst agent\'s vote, confidence rating, and short reasoning brief.',
   },
   {
     target: '#tour-company-profile',
     disableBeacon: true,
-    title: '🏢 Verified Company Profile',
-    content: 'Verified company details: sector, headquarters, ownership structure, and official corporate description pulled from live sources.',
+    title: '🏢 Verified Profile',
+    content: 'Examine audited profile details including sector, exchange, headquarters, and description.',
   },
   {
     target: '#tour-executive-summary',
     disableBeacon: true,
-    title: '📝 Executive Summary',
-    content: 'The consolidated investment narrative and detailed reasoning trace log from the full committee debate.',
+    title: '📝 Executive Summary & Discussion Log',
+    content: 'Read the comprehensive narrative summary and the detailed reasoning trace log from the committee debate.',
   },
   {
     target: '#tour-bull-case',
     disableBeacon: true,
-    title: '🐂 Bull Case Thesis',
-    content: 'Primary upward catalysts and growth drivers identified by the AI agents supporting the investment thesis.',
+    title: '🐂 Bull Case catalysts',
+    content: 'Understand key upward catalysts and positive drivers supporting the investment thesis.',
   },
   {
     target: '#tour-bear-case',
     disableBeacon: true,
-    title: '🐻 Bear Case Thesis',
-    content: 'Primary risk factors and downward catalysts that could negatively impact the investment.',
+    title: '🐻 Bear Case risks',
+    content: 'Inspect risk factors and negative drivers identified during the agent analysis.',
   },
   {
     target: '#tour-metrics-tabs',
     disableBeacon: true,
-    title: '📈 Detailed Analytical Indicators',
-    content: 'Switch between Financial Health, News & Sentiment, Industry Moats, Risk Profile, and Source References tabs.',
+    title: '📈 Detailed Metrics tabs',
+    content: 'Switch between detailed metrics tabs: Financial Health, News Sentiment, competitive moats, and risk profile.',
   },
 ];
 
-// ─── Component ────────────────────────────────────────────────────────────────
-
-export function OnboardingTour({ run, setRun }) {
+export function OnboardingTour({ run, setRun, isDashboard }) {
   const [steps, setSteps]     = useState([]);
   const [tourKey, setTourKey] = useState(0);
 
@@ -89,75 +92,157 @@ export function OnboardingTour({ run, setRun }) {
       return;
     }
 
-    // Detect which screen is active
-    const hasDashboard = !!document.querySelector('#tour-asset-summary');
-    const chosen = hasDashboard ? DASHBOARD_STEPS : SEARCH_STEPS;
+    let attempts = 0;
+    const maxAttempts = 20; // 2 seconds total
 
-    // Filter only to steps whose targets actually exist in the DOM
-    // 'body' always exists, dashboard steps may not exist on search screen
-    const available = chosen.filter(step => {
-      if (step.target === 'body') return true;
-      return !!document.querySelector(step.target);
-    });
+    const pollTargets = () => {
+      if (isDashboard) {
+        const coreEl = document.querySelector('#tour-asset-summary');
+        if (!coreEl && attempts < maxAttempts) {
+          attempts++;
+          setTimeout(pollTargets, 100);
+          return;
+        }
+      } else {
+        const coreEl = document.querySelector('#tour-search-bar');
+        if (!coreEl && attempts < maxAttempts) {
+          attempts++;
+          setTimeout(pollTargets, 100);
+          return;
+        }
+      }
 
-    console.log(`[Tour] Screen: ${hasDashboard ? 'dashboard' : 'search'}. Steps available: ${available.length}`);
+      const chosen = isDashboard ? DASHBOARD_STEPS : SEARCH_STEPS;
 
-    if (available.length === 0) {
-      console.warn('[Tour] No valid targets found — aborting');
-      setRun(false);
-      return;
-    }
+      // Check which targets are present in the DOM
+      const available = chosen.filter(step => {
+        if (step.target === 'body') return true;
+        return !!document.querySelector(step.target);
+      });
 
-    setSteps(available);
-    setTourKey(k => k + 1); // Force Joyride to remount fresh every time
+      console.log(`[Tour] Mode: ${isDashboard ? 'dashboard' : 'search'}. Available targets: ${available.length}`);
+
+      if (available.length === 0) {
+        console.warn('[Tour] No target elements found in DOM. Aborting.');
+        setRun(false);
+        return;
+      }
+
+      setSteps(available);
+      setTourKey(k => k + 1); // Force new instance lifecycle
+    };
+
+    pollTargets();
   }, [run]);
 
-  const handleCallback = ({ status, action }) => {
-    const isDone    = status === STATUS.FINISHED;
-    const isSkipped = status === STATUS.SKIPPED || action === 'skip' || action === 'close';
+  const handleCallback = (data) => {
+    const { status, type } = data;
+    console.log('[Tour] Callback type:', type, 'status:', status);
 
-    if (isDone) {
-      console.log('[Tour] Tour completed by user');
-      localStorage.setItem('onboarding_tour_completed', 'true');
-      setRun(false);
-    } else if (isSkipped) {
-      console.log('[Tour] Tour skipped by user');
-      localStorage.setItem('onboarding_tour_skipped', 'true');
+    const isFinished = status === STATUS.FINISHED;
+    const isSkipped  = status === STATUS.SKIPPED || type === 'tour:end';
+
+    if (isFinished || isSkipped) {
+      const prefix = isDashboard ? 'onboarding_dashboard' : 'onboarding_home';
+
+      // Always mark the tour as completed so it never auto-starts again
+      console.log(`[Tour] Tour concluded. Setting ${prefix}_completed = true`);
+      localStorage.setItem(`${prefix}_completed`, 'true');
       setRun(false);
     }
   };
 
-  // Only mount Joyride when we have valid steps and run=true
-  if (!run || steps.length === 0) return null;
+  if (!run || steps.length === 0) {
+    return null;
+  }
+
+  // Premium Custom Tooltip Component to guarantee button controls layout without overlaps
+  const TourTooltip = ({
+    index,
+    step,
+    backProps,
+    primaryProps,
+    skipProps,
+    tooltipProps,
+    isLastStep
+  }) => {
+    return (
+      <div {...tooltipProps} className="tour-tooltip-container bg-slate-900 border border-slate-800 text-slate-100 rounded-xl p-6 max-w-sm shadow-2xl relative select-none">
+        {step.title && (
+          <h3 className="font-extrabold text-white text-base mb-2 font-outfit flex items-center gap-2">
+            {step.title}
+          </h3>
+        )}
+        <div className="text-slate-350 text-sm leading-relaxed mb-6 font-sans">
+          {step.content}
+        </div>
+        
+        <div className="flex items-center justify-between gap-3 border-t border-slate-800/80 pt-4 mt-2">
+          {/* End Tour (Skip) Button - always visible */}
+          <button
+            {...skipProps}
+            type="button"
+            onClick={(e) => {
+              console.log('[Tour] End Tour clicked manually');
+              const prefix = isDashboard ? 'onboarding_dashboard' : 'onboarding_home';
+              localStorage.setItem(`${prefix}_completed`, 'true');
+              if (skipProps.onClick) skipProps.onClick(e);
+            }}
+            className="px-3 py-1.5 rounded-lg border border-red-500/10 hover:border-red-500/35 bg-red-950/20 hover:bg-red-950/40 text-red-400 text-xs font-mono font-semibold transition cursor-pointer"
+          >
+            End Tour
+          </button>
+
+          <div className="flex items-center gap-2">
+            {/* Previous (Back) Button - hide on step 0 */}
+            {index > 0 && (
+              <button
+                {...backProps}
+                type="button"
+                className="px-3 py-1.5 rounded-lg border border-slate-700/60 hover:border-slate-650 bg-slate-850 hover:bg-slate-800 text-slate-400 hover:text-slate-300 text-xs font-mono font-semibold transition cursor-pointer"
+              >
+                ← Previous
+              </button>
+            )}
+
+            {/* Next / Finish Button */}
+            <button
+              {...primaryProps}
+              type="button"
+              onClick={(e) => {
+                if (isLastStep) {
+                  console.log('[Tour] Finish clicked manually');
+                  const prefix = isDashboard ? 'onboarding_dashboard' : 'onboarding_home';
+                  localStorage.setItem(`${prefix}_completed`, 'true');
+                }
+                if (primaryProps.onClick) primaryProps.onClick(e);
+              }}
+              className="px-3 py-1.5 rounded-lg bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white text-xs font-mono font-bold transition shadow-lg shadow-blue-500/15 cursor-pointer"
+            >
+              {isLastStep ? '✓ Finish' : 'Next →'}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <Joyride
       key={tourKey}
       steps={steps}
       run={true}
-      continuous
-      scrollToFirstStep
-      showProgress
-      showSkipButton
-      disableOverlayClose={false}
+      continuous={true}
+      scrollToFirstStep={true}
+      showProgress={false}
+      showSkipButton={true}
       callback={handleCallback}
+      tooltipComponent={TourTooltip}
       styles={{
         options: {
           zIndex: 10000,
-          primaryColor: '#10b981',
-          backgroundColor: '#0f172a',
-          arrowColor: '#0f172a',
-          overlayColor: 'rgba(2, 6, 23, 0.82)',
-          textColor: '#94a3b8',
-          width: 340,
-        },
-      }}
-      locale={{
-        back: 'Back',
-        close: 'Close',
-        last: '✓ Finish',
-        next: 'Next →',
-        skip: 'Skip tour',
+          overlayColor: 'rgba(0, 0, 0, 0.75)', // overlay mask
+        }
       }}
     />
   );

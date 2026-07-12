@@ -26,33 +26,33 @@ export function App() {
   const [copied, setCopied] = useState(false);
   const [tourRun, setTourRun] = useState(false);
 
-  // AUTO-START: fires when analysis dashboard finishes loading
+  // AUTO-START: starts onboarding tour 900ms after the page mounts (Search screen) or the dashboard loads (report changes)
   useEffect(() => {
-    if (!report) return;
+    const isDashboard = !!report;
+    const key = isDashboard ? 'onboarding_dashboard_completed' : 'onboarding_home_completed';
 
-    const skipped    = localStorage.getItem('onboarding_tour_skipped')    === 'true';
-    const completed  = localStorage.getItem('onboarding_tour_completed')  === 'true';
+    const completed = localStorage.getItem(key) === 'true';
 
-    console.log('[Tour] Dashboard loaded');
-    console.log('[Tour] Auto-start check');
-    console.log('[Tour] Tour skipped?',   skipped);
-    console.log('[Tour] Tour completed?', completed);
+    console.log(`[Tour] Auto-start check. Screen: ${isDashboard ? 'dashboard' : 'home'} | Completed/Skipped: ${completed}`);
 
-    if (skipped || completed) {
-      console.log('[Tour] Auto-start suppressed — user already skipped or completed the tour');
+    if (completed) {
+      console.log(`[Tour] Auto-start bypassed for ${isDashboard ? 'dashboard' : 'home'} (completed/skipped flag set).`);
       return;
     }
 
-    // Wait for dashboard DOM to fully paint before querying selectors
-    const t = setTimeout(() => {
-      console.log('[Tour] Starting automatic tour');
+    // Force reset tour state to false first so transition to true is clean
+    setTourRun(false);
+
+    const timer = setTimeout(() => {
+      console.log(`[Tour] Triggering automatic onboarding tour for ${isDashboard ? 'dashboard' : 'home'}`);
       setTourRun(true);
     }, 900);
 
-    return () => clearTimeout(t);
+    return () => clearTimeout(timer);
   }, [report]);
 
   const handleSearch = (company, ticker) => {
+    setTourRun(false); // Reset tour state when starting a new search
     triggerAnalysis(company, ticker);
   };
 
@@ -115,11 +115,10 @@ ${rep.committee.bearCase.map(item => `- ${item}`).join('\n')}
 
   return (
     <div className="min-h-screen bg-slate-950 flex flex-col font-sans">
-      <OnboardingTour run={tourRun} setRun={setTourRun} />
+      <OnboardingTour run={tourRun} setRun={setTourRun} isDashboard={!!report} />
       <Header onStartTour={() => {
-        // Manual launch ALWAYS works — ignores localStorage flags
-        console.log('[Tour] Manual Start Tour clicked — forcing tour launch');
-        setTourRun(false);   // reset first so useEffect in OnboardingTour re-fires
+        console.log('[Tour] Manual tour request received. Forcing launch...');
+        setTourRun(false);
         setTimeout(() => setTourRun(true), 50);
       }} />
 
@@ -263,22 +262,22 @@ ${rep.committee.bearCase.map(item => `- ${item}`).join('\n')}
                   <p className="text-xs text-slate-400 leading-normal mb-4">
                     The following indexes, registries, and search providers were fetched and analyzed to construct this securities profile:
                   </p>
-                  <ul className="space-y-2.5">
+                   <ul className="space-y-2.5">
                     <li className="text-xs text-slate-300 flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                      <span>Alpha Vantage Global Overview Registry (Balance sheets, earnings, metrics)</span>
+                      <span>SEC Disclosures & Corporate Filings Database (Audited reports & filings)</span>
                     </li>
                     <li className="text-xs text-slate-300 flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                      <span>Tavily Real-Time Business Search Index (Press, articles, catalysts)</span>
+                      <span>Real-Time Public Business Search Index (Press releases, headlines, sentiment)</span>
                     </li>
                     <li className="text-xs text-slate-300 flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-indigo-400" />
-                      <span>SEC Edgar Filings Database (Simulated regulatory compliance audits)</span>
+                      <span>Quantified Performance Metrics (Earnings records, ratios, growth trends)</span>
                     </li>
                     <li className="text-xs text-slate-300 flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-                      <span>Google Gemini LLM Reasoning Engine (Structured agent handshakes)</span>
+                      <span>AI Multi-Agent Committee Logs (Structured analytical consensus transcripts)</span>
                     </li>
                   </ul>
                 </div>
@@ -292,7 +291,7 @@ ${rep.committee.bearCase.map(item => `- ${item}`).join('\n')}
       </main>
 
       <footer className="no-print w-full py-6 text-center border-t border-slate-900/60 mt-12 bg-slate-950/40 text-xs text-slate-500 font-mono select-none">
-        InsideIIM × Altuni AI Labs Internship Assignment. Built with LangChain.js & Gemini.
+        ALTUNI.AI LABS © {new Date().getFullYear()} • MULTI-AGENT SEC INVESTMENT RESEARCH TERMINAL
       </footer>
     </div>
   );

@@ -15,7 +15,14 @@ export function useSSEAnalysis() {
   const [activeStep, setActiveStep] = useState(null);
   const [completedSteps, setCompletedSteps] = useState([]);
   const [stepMessages, setStepMessages] = useState({});
-  const [report, setReport] = useState(null);
+  const [report, setReport] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem('active_analysis_report');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
   const [error, setError] = useState(null);
   
   const eventSourceRef = useRef(null);
@@ -27,12 +34,14 @@ export function useSSEAnalysis() {
     }
     setLoading(false);
     setReport(null);
+    sessionStorage.removeItem('active_analysis_report');
   }, []);
 
   const triggerAnalysis = useCallback((companyName, ticker) => {
     setLoading(true);
     setError(null);
     setReport(null);
+    sessionStorage.removeItem('active_analysis_report');
     setActiveStep('collecting_info');
     setCompletedSteps([]);
     setStepMessages({
@@ -72,6 +81,7 @@ export function useSSEAnalysis() {
       try {
         const finalReport = JSON.parse(e.data);
         setReport(finalReport);
+        sessionStorage.setItem('active_analysis_report', JSON.stringify(finalReport));
         setCompletedSteps(STAGES.map(s => s.key));
         setActiveStep(null);
       } catch (err) {

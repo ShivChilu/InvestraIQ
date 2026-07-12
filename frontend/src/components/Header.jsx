@@ -30,10 +30,10 @@ export function Header({ onStartTour }) {
       <div className="flex items-center gap-4">
         <button
           onClick={() => {
-            console.log('[Tour] Button clicked — calling onStartTour()');
+            console.log('[Tour] Manual Start Tour clicked in Header');
             if (onStartTour) onStartTour();
           }}
-          className="px-3 py-1.5 rounded-lg border border-emerald-500/20 hover:border-emerald-500/40 bg-slate-900/60 hover:bg-slate-905 text-emerald-400 hover:text-emerald-350 text-xs font-mono font-bold transition flex items-center gap-1.5 shadow-lg shadow-emerald-500/5 cursor-pointer"
+          className="px-3 py-1.5 rounded-lg border border-emerald-500/20 hover:border-emerald-500/40 bg-slate-900/60 hover:bg-slate-905 text-emerald-400 hover:text-emerald-350 text-xs font-mono font-bold transition flex items-center gap-1.5 shadow-lg shadow-emerald-500/5 cursor-pointer animate-fade-in"
         >
           <Sparkles size={12} className="text-emerald-400 animate-pulse" />
           <span>Start Tour</span>

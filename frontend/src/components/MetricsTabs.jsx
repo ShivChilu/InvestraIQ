@@ -95,7 +95,7 @@ export function MetricsTabs({ financials, news, industry, risk }) {
             <div className="flex items-center justify-between border-b border-slate-850 pb-3 mb-6">
               <div>
                 <h4 className="font-bold text-sm text-white font-outfit">Balance Sheets & Profit Ratios</h4>
-                <p className="text-xs text-slate-400 font-mono mt-0.5">FETCHING SEC 10-K AND ALPHA VANTAGE OVERVIEWS</p>
+                <p className="text-xs text-slate-400 font-mono mt-0.5">SOURCED FROM AUDITED FINANCIAL OVERVIEWS</p>
               </div>
               <button 
                 onClick={() => triggerExplainability(
@@ -279,13 +279,13 @@ export function MetricsTabs({ financials, news, industry, risk }) {
             <div className="flex items-center justify-between border-b border-slate-800 pb-4 mb-6">
               <div>
                 <h4 className="font-bold text-sm text-white font-outfit">Real-Time News Stream</h4>
-                <p className="text-xs text-slate-400 font-mono mt-0.5">FETCHING VIA TAVILY SEARCH INDEX</p>
+                <p className="text-xs text-slate-400 font-mono mt-0.5">CRAWLED PUBLIC PRESS & HEADLINES</p>
               </div>
               <div className="flex items-center gap-3">
                 <button 
                   onClick={() => triggerExplainability(
                     'News Sentiments & Crawl Sources',
-                    'Crawled active press releases and evaluated sentiments using Gemini Relevance filters.',
+                    'Crawled active press releases and evaluated sentiments using relevance filters.',
                     'News Analyst',
                     news.confidence || 85,
                     news.supportingSources || []
