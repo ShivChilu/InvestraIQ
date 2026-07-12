@@ -11,7 +11,8 @@ import {
   BookOpen,
   FileCheck
 } from 'lucide-react';
-import { ExplainabilityModal, getSourceQuality } from './ExplainabilityModal';
+import { ExplainabilityModal } from './ExplainabilityModal';
+import { getSourceQuality } from '../utils/sourceQuality';
 
 export function MetricsTabs({ financials, news, industry, risk }) {
   const [activeTab, setActiveTab] = useState('financials');

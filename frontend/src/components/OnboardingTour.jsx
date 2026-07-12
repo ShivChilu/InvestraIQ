@@ -133,7 +133,7 @@ export function OnboardingTour({ run, setRun, isDashboard }) {
     };
 
     pollTargets();
-  }, [run]);
+  }, [run, isDashboard, setRun]);
 
   const handleCallback = (data) => {
     const { status, type } = data;
