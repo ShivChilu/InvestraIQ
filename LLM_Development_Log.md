@@ -4,18 +4,18 @@
 
 ---
 
-## 1. Project Planning & Scoping
-* **Goal**: Build an AI-driven multi-agent securities analysis portal allowing real-time searching, profile audits, sentiment maps, and financial health scorecards.
+## 1. Initial Architecture & Planning
+* **Objective**: Build a multi-agent equity analysis terminal displaying profile audits, news sentiment mapping, and investment scorecards.
 * **Architectural Blueprint**:
-  * **Frontend**: React-based dashboard featuring dark-mode slate panel aesthetics.
+  * **Frontend**: React-based dashboard featuring slate panel glassmorphism.
   * **Backend**: Express node server orchestrating third-party APIs.
-  * **API Pipeline**: Parallel search lookups to bypass single-source limits, unified context creation, and single-inference Gemini execution mapping to a structured JSON schema.
+  * **Orchestration**: Parallel searches, context merging, and single-inference Gemini execution mapping to a structured JSON schema.
 
 ---
 
 ## 2. Iterative Development & Major Prompts
 
-### Autocomplete & Search Verification
+### Search Autocomplete & Verification
 * **Prompt Idea**: *"Design a search console that queries Alpha Vantage SYMBOL_SEARCH and falls back to Serper organic query search results, combining and ranking them by match relevance."*
 * **Implementation**: Built a custom search merging algorithm in `routes/analysis.js` that compiles Alpha Vantage ticker results and Serper search logs, deduplicating them and sorting by relevancy.
 
@@ -32,7 +32,19 @@
 
 ---
 
-## 4. Key Bug Fixes & Optimization
-* **Onboarding Joyride Overlaps**: Default Joyride styling conflicted with Tailwind slate rules. Overrode this by developing a custom `TourTooltip` JSX component mapping to standard slate colors, including complete End Tour controls on all steps.
-* **Unverified Information Filtering**: To avoid showing empty placeholders, added clean validations (`isVerified`) that dynamically collapse empty fields (such as Careers, LinkedIn, or Investor Relations) if no verified links are found.
-* **API Exhaustion Safeguards**: Standardized backend and frontend SSE catch blocks. If Gemini/Alpha Vantage rate limits are hit, the application suppresses stack traces and displays a clean `"API quota exhausted."` message.
+## 4. Feature Implementations
+
+### Committee Decision System
+* **Orchestration**: Prompted Gemini to represent 7 distinct expert personas: Financial Analyst, Risk Officer, Industry Analyst, News Analyst, Valuation Analyst, Growth Analyst, and Portfolio Manager.
+* **Vote Logic**: Each persona evaluates the unified context from their perspective, casting ballots (Invest, Hold, Pass) and outputting a structured reason that appears in the frontend detail grid.
+
+### Interactive Onboarding Tour
+* **React Joyride Customization**: Added steps guiding the user through the search input, verified profile card, sentiment stream, financial health tabs, and expert committee.
+* **Tooltip Resolution**: To resolve styling conflicts with global CSS rules, developed a custom `TourTooltip` component with a slate-900 popover panel and clear Previous, Next, and End Tour actions on all steps.
+* **Persistence Logic**: Set up `onboarding_home_completed` and `onboarding_dashboard_completed` flags in local storage to prevent the tour from auto-starting repeatedly on return visits while preserving manual start-tour button overrides.
+
+---
+
+## 5. Performance Improvements & Bug Fixes
+* **Clean Conditional Rendering**: If the Alpha Vantage API key is rate-limited or fails to return historical statement details, the charts component collapses and returns `null` to maintain a clean layout instead of rendering empty/blank axes.
+* **API Exhaustion Safety**: Configured global error handlers on both the backend and frontend. If an API quota is exhausted, raw JSON errors, provider details, and server stacks are suppressed, and the user-friendly `"API quota exhausted."` message is rendered.

@@ -1,6 +1,6 @@
 # InvestraIQ — Multi-Agent Investment Research Terminal
 
-InvestraIQ is a clean, professional, enterprise-ready multi-agent securities analysis platform that helps investors audit corporate entities, analyze financial metrics, map real-time market sentiment, and gather evidence-backed investment scores using a unified AI committee.
+InvestraIQ is a production-inspired, clean, multi-agent securities analysis platform that helps investors audit corporate entities, analyze financial metrics, map real-time market sentiment, and gather evidence-backed investment scores using a unified AI committee.
 
 ---
 
@@ -14,22 +14,52 @@ InvestraIQ solves the problem of information fragmentation and AI hallucinations
 
 ---
 
+## Concepts Demonstrated (ATS Skills)
+* **AI Orchestration**: Structured single-call multi-agent debate design patterns.
+* **Multi-Agent Systems**: Simulating distinct analyst personas (Financial, Risk, News, Valuation, Growth) with structured ballot casting.
+* **Explainable AI (XAI)**: High-fidelity citation mappings trace every data point to primary sources.
+* **Event Streaming**: SSE (Server-Sent Events) live execution pipeline streaming.
+* **Data APIs & REST Orchestration**: Concurrent Alpha Vantage, Serper, and Tavily integrations.
+* **Data Visualization**: Recharts vector rendering of financial performance ratios.
+* **Caching Architectures**: Multi-tier cache validation layer to conserve API quotas.
+* **Responsive UI Design**: Tailwind CSS dashboard interface.
+
+---
+
+## Screenshots
+
+### 1. Smart Search Console
+![Search Console](frontend/public/screenshots/search.png)
+
+### 2. Analysis Dashboard
+![Analysis Dashboard](frontend/public/screenshots/dashboard.png)
+
+### 3. Investment Committee Breakdown
+![Investment Committee](frontend/public/screenshots/committee.png)
+
+### 4. Revenue & EPS Performance Charts
+![Charts](frontend/public/screenshots/charts.png)
+
+---
+
 ## Features
 * **Smart Company Search**: Context-aware autocomplete matching user input to official company listings and stock symbols in real-time.
 * **Verified Company Profile**: Complete profile cards displaying audited headquarters, corporate sector, ownership structures, and verified links (Website, LinkedIn, Investor Relations, Careers, Newsroom).
 * **Quantified Financial Analysis**: Comprehensive key ratios (P/E ratio, Debt-to-Equity, Profit Margins, Beta, Operating Margins, Book Values) mapped side-by-side with confidence indicators.
 * **Real-Time News Stream**: Sentiment scoring of recent press releases, earnings headlines, and regulatory announcements.
-* **Multi-Agent Investment Committee**: A panel of 7 specialized expert personas (Financial, Risk, Industry, News, Valuation, Growth, Portfolio Manager) evaluating raw data and casting structured ballots (Invest, Hold, Pass).
+* **Multi-Agent Investment Committee**:
+  Unlike traditional AI investment tools, InvestraIQ simulates a committee of 7 specialized analyst expert personas (Financial, Risk, Industry, News, Valuation, Growth, Portfolio Manager) that debate raw asset data and cast structured ballots (Invest, Hold, Pass) instead of relying on a single AI opinion.
 * **Revenue & Diluted EPS Charts**: Beautiful, responsive charts mapping audited historical trends (collapsing automatically if data is unavailable to keep the layout clean).
 * **Interactive Onboarding Tour**: Custom dark-themed react-joyride guide to walk first-time users through the search console and dashboard step-by-step.
-* **Explainable AI (XAI)**: Pop-up citation modal mapping every statistic, statement, and score back to its primary web source.
+* **Explainable AI (XAI)**:
+  Unlike conventional AI stock analyzers, every recommendation is backed by verified financial metrics, trusted news sources, and committee reasoning. The citation modal maps every statistic and score back to its primary web source.
 
 ---
 
 ## Technology Stack
-* **Frontend**: React (JSX), TailwindCSS for slate-themed glassmorphism, Recharts for responsive SVG visualization, Lucide Icons.
+* **Frontend**: React (JSX), TailwindCSS, Recharts, Lucide Icons, React-Joyride.
 * **Backend**: Node.js, Express, Server-Sent Events (SSE) for streaming analysis progress, Node-Cache.
-* **AI & Orchestration**: LangChain.js, Google Gemini Pro Reasoning Engine.
+* **AI & Orchestration**: LangChain.js, Google Gemini 2.5 Flash.
 * **Data APIs**: Alpha Vantage (Overview & Statements), Serper API (Search), Tavily API (Real-time Business News).
 
 ---
@@ -98,26 +128,43 @@ npm run dev
 User Search Term
       │
       ▼
-Autocomplete / Verification Match (Alpha Vantage + Serper lookup)
+Smart Autocomplete Search (Alpha Vantage + Serper search lookup)
       │
       ▼
-Parallel Data Retrieval (Alpha Vantage Statements + Tavily News + Profile details)
+Company Profile Verification Match
       │
       ▼
-Unified Context Compiler (Deduplicated, ranked sources, and cleaned JSON metadata)
+Parallel API Retrieval
+ ┌──────────────┬──────────────┬──────────────┐
+ │ Alpha Vantage│    Tavily    │    Serper    │
+ └──────────────┴──────────────┴──────────────┘
       │
       ▼
-Single Gemini Inference Call (Runs 7-agent debate and structures scorecard schema)
+Unified Context Builder (Deduplicates & ranks sources)
       │
       ▼
-Dashboard Render (Draws Score Widget, Committee Ballots, Financial Ratios, and Charts)
+Single Gemini 2.5 Flash Analysis Call
+      │
+      ▼
+Committee Decision Engine (Structured JSON scorecard output)
+      │
+      ▼
+Interactive Dashboard Render
 ```
+
+---
+
+## Performance Optimizations
+* **Single Gemini API Inference Call**: Instead of calling Gemini 5+ times (once for each analyst agent), all context (financials, profile, news) is bundled into a single rich prompt context. This reduced overall analysis latency from **2+ minutes to under 30 seconds**, while conserving token usage.
+* **Parallel REST API Orchestration**: Queries Alpha Vantage historical statements and Tavily search indexes concurrently using `Promise.all()` to prevent serial API blocking.
+* **Tavily Search Depth Optimization**: Switched Tavily search depth settings from `"advanced"` deep-crawling to `"basic"`. This optimized query lookup latency by **over 60%** while preserving context snippet quality.
+* **Intelligent Caching**: Multi-tier cache validation layer on both backend endpoints (in-memory) and frontend console (session storage) to avoid duplicate API requests.
+* **Live SSE Progress Updates**: Connects a Server-Sent Events stream to pipe real-time pipeline milestones directly to the search console.
 
 ---
 
 ## Design Decisions & Trade-offs
 * **JavaScript (ES Modules) over TypeScript**: Chosen to minimize build overhead and compile times, prioritizing rapid iteration during hackathons/prototyping.
-* **Single Centralized Gemini Inference Call**: Instead of calling Gemini 5+ times (once for each analyst agent), all context (financials, profile, news) is bundled into a single rich prompt context. This reduced overall analysis latency from **2+ minutes to under 30 seconds**, while conserving token usage.
 * **Alpha Vantage & Tavily**: Selected for their high-quality financial statement registries and search indices. We use Tavily's `"basic"` search depth to speed up query execution while maintaining accurate news summaries.
 * **Client-Side Caching**: Uses session storage to prevent redundant API queries on page transitions, resulting in immediate dashboard loads when returning from the search console.
 
@@ -156,5 +203,5 @@ Here is how the terminal evaluates major companies when Gemini API key quotas ar
 
 ---
 
-## License
-Distributed under the MIT License. See `LICENSE` for more details.
+## Developed By
+* **Shivaprasad Chiluveru**: Designed and implemented the complete frontend, backend, AI orchestration, prompt engineering, API integrations, UX, and system architecture.
