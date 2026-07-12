@@ -23,7 +23,7 @@ export async function fetchNewsData(ticker, companyName) {
       {
         api_key: config.tavilyApiKey,
         query,
-        search_depth: 'advanced',
+        search_depth: 'basic',
         include_answer: false,
         max_results: 6
       },
