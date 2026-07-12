@@ -26,7 +26,7 @@
 ---
 
 ## 3. Key Design Decisions & Trade-offs
-* **JavaScript ESM**: Evaluated TypeScript but opted for modern ES Modules to avoid transpiler complexities and ensure fast hot-module replacement (HMR) times.
+* **JavaScript ESM**: Opted for modern ES Modules to avoid transpiler complexities, speed up dev builds, and ensure fast hot-module replacement (HMR) times.
 * **Tavily Search Depth Optimization**: Initially configured Tavily query crawls to `"advanced"`, which added 4+ seconds of latency. Changing search depth to `"basic"` optimized results retrieval times to under 1.5 seconds while maintaining snippet quality.
 * **Client-Side Caching**: Implemented session storage on the client console to cache analysis reports, providing instant dashboard reloads on page transitions.
 

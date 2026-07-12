@@ -170,7 +170,7 @@ Interactive Dashboard Render
 ---
 
 ## Design Decisions & Trade-offs
-* **JavaScript (ES Modules) over TypeScript**: Chosen to minimize build overhead and compile times, prioritizing rapid iteration during hackathons/prototyping.
+* **JavaScript (ES Modules)**: Chosen to minimize build overhead and compile times, prioritizing rapid iteration and native browser loading during development.
 * **Alpha Vantage & Tavily**: Selected for their high-quality financial statement registries and search indices. We use Tavily's `"basic"` search depth to speed up query execution while maintaining accurate news summaries.
 * **Client-Side Caching**: Uses session storage to prevent redundant API queries on page transitions, resulting in immediate dashboard loads when returning from the search console.
 
