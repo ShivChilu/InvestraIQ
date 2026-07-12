@@ -21,6 +21,12 @@ export function PerformanceCharts({
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const hasRevenue = revenueTrend && revenueTrend.length > 0;
+  const hasEps = epsTrend && epsTrend.length > 0;
+
+  // Clean conditional rendering: If no trend data exists, hide section completely
+  if (!hasRevenue && !hasEps) return null;
+
   // Format Large Currencies
   const formatCurrency = (value) => {
     if (value >= 1e9) {

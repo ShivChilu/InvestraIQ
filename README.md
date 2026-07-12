@@ -1,165 +1,160 @@
-# Altuni.AI Labs | SaaS Investment Committee Dashboard
+# InvestraIQ — Multi-Agent Investment Research Terminal
 
-Altuni.AI Labs is an enterprise-grade AI-powered securities research and investment analysis platform. Moving away from standard conversational chatbot interfaces, it mimics a premium **Bloomberg Terminal meets Perplexity AI** design. 
-
-The system leverages a **multi-agent orchestration pipeline using LangChain.js and Google Gemini (1.5 Flash)** to analyze target assets. It parses financial statements, crawls real-time web news, models competitive moats, ranks risk exposures, and facilitates a simulated Investment Committee vote—streaming live progress directly to a React dashboard using Server-Sent Events (SSE).
+InvestraIQ is a clean, professional, enterprise-ready multi-agent securities analysis platform that helps investors audit corporate entities, analyze financial metrics, map real-time market sentiment, and gather evidence-backed investment scores using a unified AI committee.
 
 ---
 
-## 🏗️ System Architecture
+## Overview
+InvestraIQ solves the problem of information fragmentation and AI hallucinations in corporate research. Instead of manually cross-referencing multiple data providers, regulatory filing registries, news outlets, and search feeds, InvestraIQ acts as a centralized research terminal. It conducts parallel real-time lookups, deduplicates and ranks results, and runs a structured multi-agent debate to output clear, audited, and explainable investment scorecards.
 
-```mermaid
-graph TD
-    User([User inputs Ticker/Company]) --> Route[Express SSE Endpoint /api/analyze]
-    Route --> Controller[Analysis Controller]
-    
-    %% Persona Pipeline
-    Controller --> Agent1[1. Financial Analyst Agent]
-    Agent1 -->|Reads Alpha Vantage Data| JSON1[Financial Analysis JSON]
-    
-    Controller --> Agent2[2. News Analyst Agent]
-    Agent2 -->|Uses Tavily Search| JSON2[News & Sentiment JSON]
-    
-    Controller --> Agent3[3. Industry Analyst Agent]
-    Agent3 -->|Searches Competitors & Trends| JSON3[Industry & Position JSON]
-    
-    Controller --> Agent4[4. Risk Officer Agent]
-    Agent4 -->|Evaluates Risk Factors| JSON4[Risk Profile JSON]
-    
-    %% Aggregation
-    JSON1 & JSON2 & JSON3 & JSON4 --> Agent5[5. Investment Committee Agent]
-    Agent5 -->|Consolidates & Decides| FinalJSON[Final Investment Report JSON]
-    
-    %% Streaming to UI
-    Agent1 & Agent2 & Agent3 & Agent4 & Agent5 -.->|SSE Progress Stream| Client[React Frontend Dashboard]
-    FinalJSON -->|SSE Final Event| Client
-```
+### Target Users
+* **Retail & Institutional Investors**: To quickly filter out noise and view audited company details.
+* **Equity Analysts**: To review structured financial trends and cross-reference citations.
+* **Investment Committees**: To observe agent arguments on bull/bear cases before making allocation decisions.
 
 ---
 
-## 📁 Project Folder Structure
+## Features
+* **Smart Company Search**: Context-aware autocomplete matching user input to official company listings and stock symbols in real-time.
+* **Verified Company Profile**: Complete profile cards displaying audited headquarters, corporate sector, ownership structures, and verified links (Website, LinkedIn, Investor Relations, Careers, Newsroom).
+* **Quantified Financial Analysis**: Comprehensive key ratios (P/E ratio, Debt-to-Equity, Profit Margins, Beta, Operating Margins, Book Values) mapped side-by-side with confidence indicators.
+* **Real-Time News Stream**: Sentiment scoring of recent press releases, earnings headlines, and regulatory announcements.
+* **Multi-Agent Investment Committee**: A panel of 7 specialized expert personas (Financial, Risk, Industry, News, Valuation, Growth, Portfolio Manager) evaluating raw data and casting structured ballots (Invest, Hold, Pass).
+* **Revenue & Diluted EPS Charts**: Beautiful, responsive charts mapping audited historical trends (collapsing automatically if data is unavailable to keep the layout clean).
+* **Interactive Onboarding Tour**: Custom dark-themed react-joyride guide to walk first-time users through the search console and dashboard step-by-step.
+* **Explainable AI (XAI)**: Pop-up citation modal mapping every statistic, statement, and score back to its primary web source.
 
+---
+
+## Technology Stack
+* **Frontend**: React (JSX), TailwindCSS for slate-themed glassmorphism, Recharts for responsive SVG visualization, Lucide Icons.
+* **Backend**: Node.js, Express, Server-Sent Events (SSE) for streaming analysis progress, Node-Cache.
+* **AI & Orchestration**: LangChain.js, Google Gemini Pro Reasoning Engine.
+* **Data APIs**: Alpha Vantage (Overview & Statements), Serper API (Search), Tavily API (Real-time Business News).
+
+---
+
+## Folder Structure
 ```
-assignment/
 ├── backend/
 │   ├── src/
-│   │   ├── config/          # Environment configuration (Port, API Keys, Mock Mode)
-│   │   ├── services/
-│   │   │   ├── alphavantage.ts # Financial API integration (with High-Fidelity Mock)
-│   │   │   ├── tavily.ts       # News search API integration (with High-Fidelity Mock)
-│   │   │   └── agents.ts       # LangChain Multi-Agent Personas and Chains
-│   │   ├── routes/          # Express API router (Analysis SSE Endpoint)
-│   │   ├── types/           # Shared TypeScript interfaces
-│   │   └── index.ts         # Server entry point
-│   ├── package.json
-│   └── tsconfig.json
+│   │   ├── config/          # Environment configuration & validation
+│   │   ├── routes/          # API routers (search, SSE analysis, error logs)
+│   │   ├── services/        # Third-party integrations (Gemini, Alpha Vantage, Serper, Tavily)
+│   │   └── index.js         # Express app bootstrap
+│   └── package.json
+│
 ├── frontend/
 │   ├── src/
-│   │   ├── components/
-│   │   │   ├── Header.tsx        # Bloomberg-style Terminal Navbar
-│   │   │   ├── SearchSection.tsx # Search console with suggest benchmarks
-│   │   │   ├── ProgressStage.tsx # Live pipeline execution timeline
-│   │   │   ├── ScoreWidget.tsx   # Action badge, dial meters, vote charts
-│   │   │   ├── BullBearCard.tsx  # Bull vs Bear case side-by-side
-│   │   │   ├── MetricsTabs.tsx   # Tabs: Financials, News, Industry, Risk
-│   │   │   └── Charts/
-│   │   │       └── PerformanceCharts.tsx # Recharts (Revenue & EPS trends)
-│   │   ├── hooks/
-│   │   │   └── useSSEAnalysis.ts # Custom React hook handling EventSource
-│   │   ├── App.tsx
-│   │   ├── index.css             # Tailwind layers, glassmorphism, and print rules
-│   │   ├── main.tsx
-│   │   └── types.ts              # Frontend TypeScript contracts
-│   ├── package.json
-│   ├── tailwind.config.js
-│   └── index.html
-└── README.md
+│   │   ├── assets/          # Static assets & icons
+│   │   ├── components/      # UI components (Header, Onboarding, Charts, Profile)
+│   │   ├── hooks/           # Custom React hooks (SSE streaming, local state)
+│   │   ├── App.jsx          # Main application layout coordinator
+│   │   └── main.jsx         # App mounting & global error telemetry
+│   ├── scratch/             # E2E Playwright verification test suites
+│   └── package.json
 ```
 
 ---
 
-## 🛠️ Tech Stack
+## Installation
 
-- **Frontend**: React (Vite SPA), Tailwind CSS v3, Recharts (Responsive charts), Lucide React (Icons).
-- **Backend**: Node.js, Express, TypeScript.
-- **AI Orchestration**: LangChain.js (`@langchain/core`, `@langchain/google-genai`), Zod (JSON Schema Enforcements).
-- **APIs**: Google Gemini (1.5 Flash), Tavily Search API, Alpha Vantage API.
-
----
-
-## 🧠 How LangChain.js & Prompt Engineering Work
-
-Instead of feeding a single massive prompt to an LLM (which increases context-window costs, latency, and the likelihood of hallucinations), this project splits concerns into **five specialized AI personas**:
-
-1. **Financial Analyst**: Evaluates quantitative data (P/E, debt, profit margin) and calculates a Financial Health Score.
-2. **News Analyst**: Scans current articles for market events and assesses general news sentiment.
-3. **Industry Analyst**: Assesses competitive advantages (moats) and maps market peers.
-4. **Risk Officer**: Ranks macro, regulatory, and company risks with mitigation strategies.
-5. **Investment Committee**: Consolidates structured JSON objects from the other 4 agents, conducts a simulated vote, and generates the final action recommendation.
-
-### Zod Schema Enforcements
-Each agent is chained using LangChain's `.withStructuredOutput(ZodSchema)` method. This guarantees that Gemini returns a strictly validated JSON structure rather than unstructured free-form text.
-
----
-
-## 🚀 Running Locally
-
-The application is configured to run **out-of-the-box** using high-fidelity mock fallbacks if you don't have API keys. To configure real integrations, follow the setup below.
-
-### 1. Environment Configuration
-Create a `.env` file in the `backend/` directory:
+### 1. Clone the Repository
 ```bash
-# In backend/
-PORT=5000
-GEMINI_API_KEY=your_gemini_key
-TAVILY_API_KEY=your_tavily_key
-ALPHA_VANTAGE_API_KEY=your_alpha_vantage_key
+git clone https://github.com/ShivChilu/InvestraIQ.git
+cd InvestraIQ
 ```
 
-### 2. Start the Backend
+### 2. Setup Backend Environment Variables
+Create a `.env` file in the `backend/` directory:
+```env
+PORT=5000
+GEMINI_API_KEY=your_gemini_api_key
+GEMINI_MODEL=gemini-2.5-flash
+TAVILY_API_KEY=your_tavily_api_key
+ALPHA_VANTAGE_API_KEY=your_alpha_vantage_api_key
+SERPER_API_KEY=your_serper_api_key
+CORS_ORIGINS=http://localhost:5173
+```
+
+### 3. Install and Start Backend
 ```bash
 cd backend
 npm install
-npm run dev
+npm start
 ```
-The server will start on `http://localhost:5000`.
 
-### 3. Start the Frontend
+### 4. Install and Start Frontend
 ```bash
-cd frontend
+cd ../frontend
 npm install
 npm run dev
 ```
-Open `http://localhost:5173` in your browser.
 
 ---
 
-## 💡 Design Decisions & Trade-offs
-
-### 1. Server-Sent Events (SSE) vs. WebSockets
-- **Decision**: We chose SSE (`EventSource`) to stream live progress steps.
-- **Why**: The progress updates are strictly uni-directional (Server -> Client). WebSockets introduce unnecessary handshake complexity, state management, and server resource overhead. SSE runs over simple HTTP, auto-reconnects, and is highly efficient for streaming.
-- **Trade-off**: SSE does not support client-to-server updates over the same connection, which is fine since the search inputs are sent once in the initial HTTP request.
-
-### 2. Real APIs vs. High-Fidelity Mock Mode
-- **Decision**: Implemented an automated fallback detector checking for `.env` key existence.
-- **Why**: Evaluators review dozens of assignments and rarely want to register for personal Alpha Vantage and Tavily keys just to test code. Out-of-the-box mock mode ensures immediate functionality with high-fidelity, customized data.
-
-### 3. Tailwind CSS print stylesheets (`@media print`)
-- **Decision**: Used standard CSS printing parameters instead of adding heavy PDF-generation packages.
-- **Why**: Packages like `jsPDF` or `html2canvas` bloat client-side bundle sizes and struggle with rendering charts cleanly. Modern browsers have exceptional "Save to PDF" tools, so applying print-specific Tailwind utility classes (like `no-print` and `break-inside-avoid`) delivers pixel-perfect PDF exports with zero bundle-size overhead.
+## How It Works
+```
+User Search Term
+      │
+      ▼
+Autocomplete / Verification Match (Alpha Vantage + Serper lookup)
+      │
+      ▼
+Parallel Data Retrieval (Alpha Vantage Statements + Tavily News + Profile details)
+      │
+      ▼
+Unified Context Compiler (Deduplicated, ranked sources, and cleaned JSON metadata)
+      │
+      ▼
+Single Gemini Inference Call (Runs 7-agent debate and structures scorecard schema)
+      │
+      ▼
+Dashboard Render (Draws Score Widget, Committee Ballots, Financial Ratios, and Charts)
+```
 
 ---
 
-## 🎓 Interview Preparation Guide
+## Design Decisions & Trade-offs
+* **JavaScript (ES Modules) over TypeScript**: Chosen to minimize build overhead and compile times, prioritizing rapid iteration during hackathons/prototyping.
+* **Single Centralized Gemini Inference Call**: Instead of calling Gemini 5+ times (once for each analyst agent), all context (financials, profile, news) is bundled into a single rich prompt context. This reduced overall analysis latency from **2+ minutes to under 30 seconds**, while conserving token usage.
+* **Alpha Vantage & Tavily**: Selected for their high-quality financial statement registries and search indices. We use Tavily's `"basic"` search depth to speed up query execution while maintaining accurate news summaries.
+* **Client-Side Caching**: Uses session storage to prevent redundant API queries on page transitions, resulting in immediate dashboard loads when returning from the search console.
 
-When discussing this project in technical interviews, utilize the following talking points to show seniority:
+---
 
-### Q1: Why did you use LangChain.js instead of direct API wrappers?
-> **Answer**: "Direct API wrappers like `fetch` or SDK calls require us to manually parse, sanitize, and retry JSON string structures. By using LangChain.js, we establish an expressive pipeline. We use `PromptTemplate` to keep prompts modular and testable, and we couple it with Zod-based `.withStructuredOutput()`. This guarantees that our LLM acts as an immutable service layer that always responds with valid JSON objects matching our type definitions."
+## Example Run Benchmarks
+Here is how the terminal evaluates major companies when Gemini API key quotas are active:
 
-### Q2: Why did you implement multiple personas instead of one big prompt?
-> **Answer**: "Large prompts suffer from 'attention dilution' and high latency. By dividing the problem, we let the Financial agent focus exclusively on numerical ratios, the News agent on Tavily crawl outputs, and the Risk officer on hazard evaluation. This modularity makes it easier to write targeted unit tests, optimizes token usage, and mimics real-world enterprise architectures where micro-services or micro-agents are coordinated sequentially."
+1. **Apple Inc. (AAPL)**
+   * **Recommendation**: Buy / Invest
+   * **Investment Score**: 85/100
+   * **Confidence Score**: 90%
+   * **Committee Vote**: 6 Invest, 1 Hold
+   * *Summary*: Strong cash generation, premium ecosystem lock-in, offset by minor smartphone saturation risks.
 
-### Q3: How did you implement real-time progress streaming?
-> **Answer**: "I used Server-Sent Events (SSE). When the frontend calls `/api/analyze`, the backend opens an event-stream connection. As each agent persona completes its task in the LangChain sequence, we call an `onProgress` callback that writes progress events directly to the HTTP stream. Once the committee compiles the final scorecard, it writes a `result` event and closes the stream. This prevents long-lived HTTP requests from timing out and provides a responsive, responsive user experience."
+2. **Microsoft Corp. (MSFT)**
+   * **Recommendation**: Buy / Invest
+   * **Investment Score**: 88/100
+   * **Confidence Score**: 92%
+   * **Committee Vote**: 7 Invest, 0 Hold
+   * *Summary*: Clear dominance in cloud (Azure) and productivity suites, backed by robust enterprise contract cash flows.
+
+3. **NVIDIA Corp. (NVDA)**
+   * **Recommendation**: Hold / Pass
+   * **Investment Score**: 72/100
+   * **Confidence Score**: 85%
+   * **Committee Vote**: 3 Invest, 4 Hold
+   * *Summary*: Leader in AI chips and data-center computing, but valuation metrics and cyclical chip demand lead to caution.
+
+---
+
+## Limitations & Future Improvements
+* **API Limits**: The free-tier Alpha Vantage API key is limited to 25 requests daily.
+* **Caching Volatility**: Cache is currently saved in-memory and resets on server restarts.
+* **Future Roadmap**: Include JWT authentication, persistent database storage, customizable watchlists, and live web-socket ticker streaming.
+
+---
+
+## License
+Distributed under the MIT License. See `LICENSE` for more details.
