@@ -4,7 +4,7 @@ InvestraIQ is a production-inspired, clean, multi-agent securities analysis plat
 
 ---
 
-## Project Links ⭐⭐⭐⭐⭐
+## Project Links
 * 🔗 **Live Application URL**: [https://investraiq-1.onrender.com/](https://investraiq-1.onrender.com/)
 * 📦 **GitHub Repository**: [https://github.com/ShivChilu/InvestraIQ](https://github.com/ShivChilu/InvestraIQ)
 
